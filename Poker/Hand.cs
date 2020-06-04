@@ -31,11 +31,13 @@ namespace Poker
 
         public string showPreFlup()
         {
-            string output = "";
+            string output = "[";
             foreach(Card card in preFlup)
             {
                output += card.showCard();
+                output += ";";
             }
+            output += "]";
             return output;
         }
         

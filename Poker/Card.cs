@@ -42,7 +42,8 @@ namespace Poker
 
         public string showCard()
         {
-            return (Rank.ToString() + " of " + Suit.ToString() + " ; ");
+            
+            return (Rank.ToString()+ " of " + Suit.ToString());
         }
     }
 }

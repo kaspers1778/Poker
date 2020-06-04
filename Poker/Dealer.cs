@@ -14,7 +14,8 @@ namespace Poker
         {
             Console.WriteLine("Dealer starting new game...");
             GameTable.Bank = 0;
-            foreach(IPlayer player in GameTable.Players)
+            GameTable.ReturnPassedPlayers();
+            foreach (IPlayer player in GameTable.Players)
             {
                 player.lastBet = 0;
                 player.Hand.hand = new List<Card>();
@@ -22,6 +23,7 @@ namespace Poker
                 
             }
             GameTable.currentBet = 0;
+            GameTable.CardsOnTable = new List<Card>();
             GameDeck = new Deck();
             ShuffleDeck();
         }
@@ -83,6 +85,10 @@ namespace Poker
         public void CollectBlindes()
         {
             Console.WriteLine("Dealer collecting Small and Big Blindes...");
+            if(GameTable.SmallBlindIndex > GameTable.Players.Count - 1)
+            {
+                GameTable.SmallBlindIndex = 0;
+            }
             if (GameTable.SmallBlindIndex < GameTable.Players.Count-1)
             {
                 GameTable.Bank+=GameTable.Players[GameTable.SmallBlindIndex].Call(GameTable.SmallBlind);
@@ -95,23 +101,42 @@ namespace Poker
                 GameTable.Bank+= GameTable.Players[GameTable.SmallBlindIndex].Call(GameTable.SmallBlind);
                 GameTable.Bank+=GameTable.Players[0].Call(GameTable.SmallBlind * 2);
                 GameTable.currentBet = GameTable.SmallBlind * 2;
-                GameTable.SmallBlindIndex = 1;
+                GameTable.SmallBlindIndex = 0;
             }
         }
 
         public void CollectBets()
         {
             Console.WriteLine("Dealer Collecting Bets...");
-            int currentIndex = GameTable.SmallBlind;
-            while(GameTable.Bank != GameTable.currentBet * GameTable.Players.Count && GameTable.Bank != 0)
+            int currentIndex = GameTable.SmallBlindIndex + 1;
+            int startBankOnTurn = 0;
+            if (GameTable.currentBet == 10)
             {
+                 startBankOnTurn = GameTable.Bank;
+            }
+            while((GameTable.Bank - startBankOnTurn)!= GameTable.currentBet * GameTable.Players.Count && GameTable.Bank != 0)
+            {
+                if (GameTable.Players.Count == 1)
+                {
+                    break;
+                }
+
                 if (currentIndex <= GameTable.Players.Count - 1)
                 {
+                    int playersLastBet = GameTable.Players[currentIndex].lastBet;
                     int bet = GameTable.Players[currentIndex].Bet(GameTable.currentBet - GameTable.Players[currentIndex].lastBet);
-                    GameTable.currentBet = bet;
-                    GameTable.Bank += bet;
+                    if (bet == 0 && GameTable.currentBet - GameTable.Players[currentIndex].lastBet != 0)
+                    {
+                        GameTable.PlayerPassed(GameTable.Players[currentIndex]);
+                    }
+                    else
+                    {
+                        GameTable.currentBet = bet + playersLastBet;
+                        GameTable.Players[currentIndex].lastBet = bet;
+                        GameTable.Bank += bet;
+                        currentIndex++;
+                    }
 
-                    currentIndex++;
                 }
                 else
                 {
@@ -119,6 +144,11 @@ namespace Poker
                 }
                 
             }
+            foreach(IPlayer player in GameTable.Players)
+            {
+                player.lastBet = 0;
+            }
+            GameTable.currentBet = 10;
         }
 
         public List<IPlayer> getWinners()
@@ -132,6 +162,7 @@ namespace Poker
                 }
             }
             List<IPlayer> winners = new List<IPlayer>();
+
             foreach (IPlayer player in GameTable.Players)
             {
                 if (CombinationIndicator.getCombination(player.Hand.hand) == CombinationIndicator.getCombination(winner.Hand.hand))
@@ -179,11 +210,13 @@ namespace Poker
 
         public string showCardsOnTable()
         {
-            string output = "";
+            string output = "[";
             foreach (Card card in GameTable.CardsOnTable)
             {
                 output += card.showCard();
+                output += ";";
             }
+            output += "]";
             return output;
         }
        

@@ -40,26 +40,27 @@ namespace Poker
             {
                 PokerChips -= callPrice;
                 lastBet = callPrice;
+                Console.WriteLine(Name + " is Called " + callPrice.ToString());
                 return callPrice;
             }
-
             else
             {
-                return Fold();
-                
+                return Fold();   
             }
         }
 
         public int Raise(int raisePrice)
         {
-            PokerChips -= (int)(PokerChips * 0.25);
-            lastBet = (int)(PokerChips * 0.25);
-            return (int)(PokerChips * 0.25);
+            PokerChips -= (int)(PokerChips * 0.1);
+            lastBet = (int)(PokerChips * 0.1);
+            Console.WriteLine(Name + " is Raised " + ((int)(PokerChips * 0.1)).ToString());
+            return (raisePrice + (int)(PokerChips * 0.1));
         }
 
         
         public int Fold()
         {
+            Console.WriteLine(Name + " is passed");
             return 0;
         }
         public void Win(int gain)

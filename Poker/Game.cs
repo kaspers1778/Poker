@@ -21,13 +21,17 @@ namespace Poker
 
         public void ShowInfo()
         {
-   
+            Players = GameTable.Players;
+            Console.WriteLine("\n" + "----------TABLE----------");
             foreach (IPlayer pokerist in Players)
             {
                 Console.WriteLine(pokerist.Name + " " + pokerist.PokerChips);
             }
 
+            Console.WriteLine("\n");
             Console.WriteLine("Bank: " + GameTable.Bank);
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("\n" + "Press any key to continue");
             Console.ReadKey();
         }
         public void GameLoop()
@@ -90,18 +94,21 @@ namespace Poker
 
             Console.Clear();
 
-            Console.WriteLine("Cards on the table: " + Dealer.showCardsOnTable());
+            Console.WriteLine("Cards on the table: " + Dealer.showCardsOnTable() + "\n");
+            Console.WriteLine("\n" + "----------TABLE----------");
             foreach (IPlayer pokerist in Players)
             {
-                Console.WriteLine(pokerist.Name + " " + pokerist.PokerChips + " " + pokerist.Hand.showPreFlup() + " - " + CombinationIndicator.getCombination(pokerist.Hand.hand));
+                Console.WriteLine(pokerist.Name + " " + pokerist.PokerChips + " " + pokerist.Hand.showPreFlup() + " - " + CombinationIndicator.getCombination(pokerist.Hand.hand) + "\n");
             }
+            Console.WriteLine("-------------------------");
             Dealer.EndGame();
+            Console.WriteLine("\n" + "Press any key to continue");
             Console.ReadKey();
-
             Console.Clear();
 
             Console.WriteLine("Restart?(Y/N)");
             var output = Console.ReadLine();
+            Console.Clear();
             if(output == "Y")
             {
                 GameLoop();

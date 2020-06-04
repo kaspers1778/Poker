@@ -47,13 +47,13 @@ namespace Poker
             {
                 PokerChips -= callPrice;
                 lastBet = callPrice;
+                Console.WriteLine(Name + " is Called " + callPrice.ToString());
                 return callPrice;
             }
 
             else
             {
-                this.Fold();
-                return 0;
+                return Fold();
             }
         }
 
@@ -63,26 +63,27 @@ namespace Poker
             var bet = Convert.ToInt16(Console.ReadLine());
             if (bet > CallPrice)
             {
-                if (bet >= PokerChips)
+                if (bet <= PokerChips)
                 {
                     PokerChips -= bet;
                     lastBet = bet;
+                    Console.WriteLine(Name + " is Raised " + bet.ToString());
                     return bet;
                 }
                 else
                 {
-                    this.Fold();
-                    return 0;
+                    return Fold();
                 }
             }
             else
             {
-                return 0;
+                return Fold();
             }
         }
 
         public int Fold()
         {
+            Console.WriteLine(Name + " is passed");
             return 0;
         }
         public void Win(int gain)
