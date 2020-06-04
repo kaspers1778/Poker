@@ -7,7 +7,7 @@ namespace Poker
     class Deck
     {
         private int Size = 52;
-        public List<Card> deck;
+        public List<Card> deck = new List<Card>();
         
         public Deck()
         {
@@ -15,7 +15,8 @@ namespace Poker
             {
                 foreach(Rank rank in Enum.GetValues(typeof(Rank)))
                 {
-                    deck.Add(new Card(rank, suit));
+                    Card card = new Card(rank, suit);
+                    deck.Add(card);
                 }
             }
         }
